@@ -1,3 +1,4 @@
+#!/bin/bash
 ###########################################################################
 # Setup environment                                                       #
 ###########################################################################
@@ -5,7 +6,7 @@ set -e
 
 source bbndk.env
 
-export DEV_ROOT=`pwd`
+DEV_ROOT=`pwd`
 
 if [ ! -d "build" ]; then
   mkdir build
@@ -18,7 +19,7 @@ fi
 
 popd
 
-export PLAYBOOK_PREFIX=$DEV_ROOT/build/PlayBook
+PLAYBOOK_PREFIX=$DEV_ROOT/build/PlayBook
 
 ###########################################################################
 # Setup PlayBook Environment Variables                                    #
@@ -72,6 +73,17 @@ fi
 if [ ! -d QNX6.6.0_OPT.OBJ ] ; then
     mkdir QNX6.6.0_OPT.OBJ
 fi
-cp $DEV_ROOT/jsautocfg.h QNX6.6.0_OPT.OBJ/jsautocfg.h
 
-make -f Makefile.ref all install
+# Copy the prebuilt CPU config file
+cp $DEV_ROOT/jsautocfg.h .
+
+make -j8 -f Makefile.ref all install
+
+# couchdb looks for libmozjs.so, but SpiderMonkey 1.8.0 creates libjs.so. Link the one it's looking for to the one that's created.
+pushd $JS_INSTALL_DIR/lib
+if [ -f libmozjs.so ]; then
+    rm -f libmozjs.so
+fi
+ln -s libjs.so libmozjs.so
+popd
+
