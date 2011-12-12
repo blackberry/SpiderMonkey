@@ -7,8 +7,6 @@ build_spidermonkey_for_playbook()
     ###########################################################################
     set -e
 
-    source bbndk.env
-
     local BUILD_ROOT=`pwd`
 
     ###########################################################################
@@ -16,17 +14,16 @@ build_spidermonkey_for_playbook()
     ###########################################################################
 
     # ensure required BBNDK env variables are set
-    : ${BBNDK_DIR:?"Error: BBNDK_DIR environment variable is not set."}
-    : ${BBNDK_HOST:?"Error: BBNDK_HOST environment variable is not set."}
-    : ${BBNDK_TARGET:?"Error: BBNDK_TARGET environment variable is not set."}
+    : ${QNX_HOST:?"Error: QNX_HOST environment variable is not set."}
+    : ${QNX_TARGET:?"Error: QNX_TARGET environment variable is not set."}
 
     #set up env for cross-compiling for PlayBook
-    export PATH=$BBNDK_HOST/usr/bin:$PATH
-    export CC="$BBNDK_HOST/usr/bin/qcc -V4.4.2,gcc_ntoarmv7le_cpp "
+    export PATH=$QNX_HOST/usr/bin:$PATH
+    export CC="$QNX_HOST/usr/bin/qcc -V4.4.2,gcc_ntoarmv7le_cpp "
     export CFLAGS="-V4.4.2,gcc_ntoarmv7le_cpp -g "
-    export CPP="$BBNDK_HOST/usr/bin/qcc -V4.4.2,gcc_ntoarmv7le_cpp -E"
-    export LD="$BBNDK_HOST/usr/bin/ntoarmv7-ld "
-    export RANLIB="$BBNDK_HOST/usr/bin/ntoarmv7-ranlib "
+    export CPP="$QNX_HOST/usr/bin/qcc -V4.4.2,gcc_ntoarmv7le_cpp -E"
+    export LD="$QNX_HOST/usr/bin/ntoarmv7-ld "
+    export RANLIB="$QNX_HOST/usr/bin/ntoarmv7-ranlib "
 
     ###########################################################################
     # Build SpiderMonkey 1.8.0                                                #   
@@ -36,8 +33,8 @@ build_spidermonkey_for_playbook()
     export JS_INSTALL_DIR=$BUILD_ROOT
     local JS_TARGET=arm-unknown-nto-qnx6.5.0eabi
     export SPIDERMONKEY_TARGET_OS=QNX
-    export LDFLAGS="-L$BBNDK_TARGET/armle-v7/usr/lib -L$BBNDK_TARGET/armle-v7/lib"
-    export CPPFLAGS="-D__QNXNTO__ -I$BBNDK_TARGET/usr/local/include"
+    export LDFLAGS="-L$QNX_TARGET/armle-v7/usr/lib -L$QNX_TARGET/armle-v7/lib"
+    export CPPFLAGS="-D__QNXNTO__ -I$QNX_TARGET/usr/include -I$QNX_TARGET/usr/local/include"
 
     # Build release version
     export BUILD_OPT=1
