@@ -43,7 +43,7 @@
 
 #CC = $(CC) #Build script will define this
 CCC = $(CPP)
-CFLAGS +=  -Wall -Wno-format -MMD -D __QNX__ -D__QNXNTO__ -I$(BBNDK_TARGET)/usr/include
+CFLAGS +=  -Wall -Wno-format -MMD -D __QNX__ -D__QNXNTO__ -I$(QNX_TARGET)/usr/include
 
 OS_CFLAGS = -DXP_UNIX
 
